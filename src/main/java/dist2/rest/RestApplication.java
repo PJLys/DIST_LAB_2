@@ -9,17 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @SpringBootApplication
-@RestController
 public class RestApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RestApplication.class, args);
-	}
-	@GetMapping("/")
-	public List<BankClient> hello() {
-		return List.of(
-				new BankClient("Bart"),
-				new BankClient("Benny", 500, 10.20),
-				new BankClient("Rita")
-		);
 	}
 }
