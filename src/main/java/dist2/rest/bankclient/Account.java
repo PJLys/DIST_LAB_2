@@ -19,14 +19,14 @@ public class Account {
 
     public Account(String name) {
         this.name = name;
-        this.id = -1;
         this.bal = 0.0;
     }
 
     @Deprecated
-    public Account() {
-        this.name = null;
-        this.id = -1;
-        this.bal = 0;
+    public Account() {}
+
+    public Account(String name, int init_bal) {
+        this.name = name;
+        this.bal = init_bal;
     }
 }
