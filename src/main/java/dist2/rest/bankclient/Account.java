@@ -1,32 +1,30 @@
 package dist2.rest.bankclient;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 
 @ToString
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode
 @AllArgsConstructor
-public class BankClient {
+public class Account {
+    private @Id @GeneratedValue Integer id;
     private String name;
-    @Id
-    private Integer id;
     private double bal;
 
-    public BankClient(String name) {
+    public Account(String name) {
         this.name = name;
         this.id = -1;
         this.bal = 0.0;
     }
 
     @Deprecated
-    public BankClient() {
+    public Account() {
         this.name = null;
         this.id = -1;
         this.bal = 0;
