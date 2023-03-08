@@ -8,13 +8,13 @@
 		<version>3.0.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>dist.2</groupId>
+	<groupId>dist2</groupId>
 	<artifactId>rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rest</name>
-	<description>6-DIST lab 2 : rest</description>
+	<description>RESTful DIST</description>
 	<properties>
-		<java.version>19</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
