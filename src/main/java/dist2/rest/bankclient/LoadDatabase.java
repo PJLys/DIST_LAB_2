@@ -16,7 +16,7 @@ class LoadDatabase {
 
         return args -> {
             log.info("Preloading " + repository.save(new Account("Ronny")));
-            log.info("Preloading " + repository.save(new Account("Rütger", 500)));
+            log.info("Preloading " + repository.save(new Account("Rütger", 500L)));
         };
     }
 }

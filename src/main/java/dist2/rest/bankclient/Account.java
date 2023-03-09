@@ -1,19 +1,23 @@
 package dist2.rest.bankclient;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 
 @ToString
 @Entity
 @Getter
+@Table
 @Setter
 @EqualsAndHashCode
-@AllArgsConstructor
+@NoArgsConstructor
 public class Account {
-    private @Id @GeneratedValue Integer id;
+    @SequenceGenerator(
+            name = "account_sequence",
+            sequenceName = "account_sequence",
+            allocationSize = 1
+    )
+    private @Id @GeneratedValue Long id;
     private String name;
     private double bal;
 
@@ -22,10 +26,7 @@ public class Account {
         this.bal = 0.0;
     }
 
-    @Deprecated
-    public Account() {}
-
-    public Account(String name, Integer init_bal) {
+    public Account(String name, Long init_bal) {
         this.name = name;
         this.bal = init_bal;
     }
