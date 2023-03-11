@@ -1,4 +1,4 @@
-package dist2.rest.bankclient;
+package dist2.rest.bankserver;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -58,6 +58,33 @@ public class ClientController {
                     return repository.save(new_acc);
                 });
         EntityModel<Account> entityModel = assembler.toModel(acc);
+        return ResponseEntity
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
+    }
+
+    @PutMapping("/accounts/{id}")
+    ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody Double amount) {
+        Account acc = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ID not found"));
+        if ((acc.getBal() < amount)) {
+            throw new RuntimeException("Insufficient funds!");
+        }
+        acc.setBal(acc.getBal()-amount);
+        EntityModel<Account> entityModel = assembler.toModel(acc);
+
+        return ResponseEntity
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
+    }
+
+    @PutMapping("/accounts/{id}")
+    ResponseEntity<?> deposit(@PathVariable Long id, @RequestBody Double amount) {
+        Account acc = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ID not found"));
+        acc.setBal(acc.getBal()+amount);
+        EntityModel<Account> entityModel = assembler.toModel(acc);
+
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);

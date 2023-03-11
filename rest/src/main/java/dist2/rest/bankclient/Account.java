@@ -1,4 +1,4 @@
-package dist2.rest.bankclient;
+package dist2.rest.bankserver;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

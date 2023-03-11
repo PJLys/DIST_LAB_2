@@ -1,4 +1,4 @@
-package dist2.rest.bankclient;
+package dist2.rest.bankserver;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package dist2.rest.bankclient;
+package dist2.rest.bankserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
