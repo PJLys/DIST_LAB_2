@@ -1,5 +1,6 @@
-package dist2.rest.bankserver;
+package dist2.rest.banksystem.bankserver;
 
+import dist2.rest.banksystem.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

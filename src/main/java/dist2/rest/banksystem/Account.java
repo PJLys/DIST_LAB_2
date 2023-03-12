@@ -1,7 +1,9 @@
-package dist2.rest.bankserver;
+package dist2.rest.banksystem;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 
 @ToString
@@ -19,15 +21,15 @@ public class Account {
     )
     private @Id @GeneratedValue Long id;
     private String name;
-    private double bal;
+    private BigDecimal bal;
 
     public Account(String name) {
         this.name = name;
-        this.bal = 0.0;
+        this.bal = new BigDecimal(0);
     }
 
     public Account(String name, Long init_bal) {
         this.name = name;
-        this.bal = init_bal;
+        this.bal = new BigDecimal(init_bal);
     }
 }

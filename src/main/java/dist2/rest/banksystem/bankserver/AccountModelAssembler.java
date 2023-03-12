@@ -1,4 +1,5 @@
-package dist2.rest.bankserver;
+package dist2.rest.banksystem.bankserver;
+import dist2.rest.banksystem.Account;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

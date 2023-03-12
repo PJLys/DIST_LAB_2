@@ -1,11 +1,13 @@
-package dist2.rest.bankserver;
+package dist2.rest.banksystem.bankserver;
 
+import dist2.rest.banksystem.Account;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,7 @@ public class ClientController {
                 .body(entityModel);
     }
 
-    @PutMapping("/accounts/{id}")
+    @PutMapping("/accounts/{id}/replace")
     ResponseEntity<?> replaceAccount(@RequestBody Account new_acc, @PathVariable Long id) {
         Account acc =  repository.findById(id)
                 .map(a -> {
@@ -63,14 +65,14 @@ public class ClientController {
                 .body(entityModel);
     }
 
-    @PutMapping("/accounts/{id}")
-    ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody Double amount) {
+    @PutMapping("/accounts/{id}/withdraw")
+    ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody BigDecimal amount) {
         Account acc = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID not found"));
-        if ((acc.getBal() < amount)) {
+        if ((acc.getBal().compareTo(amount)== -1)) {
             throw new RuntimeException("Insufficient funds!");
         }
-        acc.setBal(acc.getBal()-amount);
+        acc.setBal(acc.getBal().add(amount.negate()));
         EntityModel<Account> entityModel = assembler.toModel(acc);
 
         return ResponseEntity
@@ -78,11 +80,11 @@ public class ClientController {
                 .body(entityModel);
     }
 
-    @PutMapping("/accounts/{id}")
-    ResponseEntity<?> deposit(@PathVariable Long id, @RequestBody Double amount) {
+    @PutMapping("/accounts/{id}/deposit")
+    ResponseEntity<?> deposit(@PathVariable Long id, @RequestBody BigDecimal amount) {
         Account acc = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID not found"));
-        acc.setBal(acc.getBal()+amount);
+        acc.setBal(acc.getBal().add(amount));
         EntityModel<Account> entityModel = assembler.toModel(acc);
 
         return ResponseEntity
