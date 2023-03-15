@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @ToString
 @Entity
 @Getter
-@Table
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor

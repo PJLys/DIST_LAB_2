@@ -69,7 +69,7 @@ public class ClientController {
     ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody BigDecimal amount) {
         Account acc = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID not found"));
-        if ((acc.getBal().compareTo(amount)== -1)) {
+        if ((acc.getBal().compareTo(amount) == -1)) {
             throw new RuntimeException("Insufficient funds!");
         }
         acc.setBal(acc.getBal().add(amount.negate()));
