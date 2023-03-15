@@ -1,7 +1,9 @@
 package dist2.rest.banksystem.bankclient;
 
 import dist2.rest.banksystem.Account;
-import org.hibernate.cfg.NotYetImplementedException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,11 +12,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
+@ToString
+@Getter
+@Setter
 public class BankClient {
     private static final String BASE_URL = "http://localhost:8080";
     private static final RestTemplate restTemplate = new RestTemplate();
     private final String name;
     private final ArrayList<Long> ids = new ArrayList<>();
+
 
     public BankClient(String name) {
         this.name = name;
@@ -67,7 +73,7 @@ public class BankClient {
         return HttpStatus.OK.value();
     }
 
-    public Account getAcc(BigDecimal amount, String id) {
+    public Account getAcc(Long id) {
         //Retrieve response from get request to our account
         ResponseEntity<Account> responseEntity = restTemplate.getForEntity(
                 BASE_URL + "/accounts/" + id,
@@ -130,5 +136,26 @@ public class BankClient {
         assert res.getBody() != null;
 
         return res.getBody();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("This is a BankClient");
+
+        BankClient alice = new BankClient("Alice");
+        BankClient bob = new BankClient("Bob");
+
+        alice.createAccount();
+        Account acc_a_1 = alice.getAcc(alice.getIds().get(0));
+
+        alice.createAccount();
+
+        bob.createAccount();
+
+        alice.deposit(BigDecimal.valueOf(1000), alice.getIds().get(1));
+        Account acc_a_2 = alice.getAcc(alice.getIds().get(1));
+
+        System.out.println(acc_a_1);
+        System.out.println(acc_a_2);
+
     }
 }

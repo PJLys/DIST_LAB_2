@@ -85,6 +85,7 @@ public class ClientController {
         Account acc = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID not found"));
         acc.setBal(acc.getBal().add(amount));
+        repository.save(acc);
         EntityModel<Account> entityModel = assembler.toModel(acc);
 
         return ResponseEntity
