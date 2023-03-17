@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -44,7 +45,14 @@ public class ClientController {
 
     @PostMapping("/accounts")
     ResponseEntity<?> addAccount(@RequestBody Account newAcc) {
-        EntityModel<Account> entityModel = assembler.toModel(repository.save(newAcc));
+        AtomicReference<Account> acc = new AtomicReference<>(new Account());
+        executorService.submit(() -> {
+            synchronized (acc)  {
+                 acc.set(repository.save(newAcc));
+            }
+        });
+
+        EntityModel<Account> entityModel = assembler.toModel(acc.get());
         return ResponseEntity //
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
                 .body(entityModel);
@@ -52,17 +60,24 @@ public class ClientController {
 
     @PutMapping("/accounts/{id}/replace")
     ResponseEntity<?> replaceAccount(@RequestBody Account new_acc, @PathVariable Long id) {
-        Account acc =  repository.findById(id)
-                .map(a -> {
-                    a.setName(new_acc.getName());
-                    a.setBal(new_acc.getBal());
-                    return repository.save(a);
-                })
-                .orElseGet(() -> {
-                    new_acc.setId(id);
-                    return repository.save(new_acc);
-                });
-        EntityModel<Account> entityModel = assembler.toModel(acc);
+        AtomicReference<Account> acc = new AtomicReference<>(new Account());
+
+        executorService.submit(() -> {
+            synchronized (acc) {
+                 acc.set(repository.findById(id)
+                         .map(a -> {
+                             a.setName(new_acc.getName());
+                             a.setBal(new_acc.getBal());
+                             return repository.save(a);
+                         })
+                         .orElseGet(() -> {
+                             new_acc.setId(id);
+                             return repository.save(new_acc);
+                         }));
+            }
+        });
+
+        EntityModel<Account> entityModel = assembler.toModel(acc.get());
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
