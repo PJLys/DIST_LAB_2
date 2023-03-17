@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -18,10 +19,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ClientController {
     private final AccountRepo repository;
     private final AccountModelAssembler assembler;
+    private final ExecutorService executorService;
 
-    public ClientController(AccountRepo repository, AccountModelAssembler assembler) {
+    public ClientController(AccountRepo repository, AccountModelAssembler assembler, ExecutorService executorService) {
         this.repository = repository;
         this.assembler = assembler;
+        this.executorService = executorService;
     }
 
     @GetMapping("/accounts/{id}")
@@ -67,12 +70,21 @@ public class ClientController {
 
     @PutMapping("/accounts/{id}/withdraw")
     ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody BigDecimal amount) {
+        // Check if Account exists
         Account acc = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID not found"));
-        if ((acc.getBal().compareTo(amount) == -1)) {
-            throw new RuntimeException("Insufficient funds!");
-        }
-        acc.setBal(acc.getBal().add(amount.negate()));
+
+        // Withdraw DINERO
+        executorService.submit(() -> {
+            synchronized (acc) {
+                if ((acc.getBal().compareTo(amount) == -1)) {
+                    throw new RuntimeException("Insufficient funds!");
+                }
+                acc.setBal(acc.getBal().add(amount.negate()));
+                repository.save(acc);
+            }
+        });
+
         EntityModel<Account> entityModel = assembler.toModel(acc);
 
         return ResponseEntity
@@ -82,10 +94,17 @@ public class ClientController {
 
     @PutMapping("/accounts/{id}/deposit")
     ResponseEntity<?> deposit(@PathVariable Long id, @RequestBody BigDecimal amount) {
+        // Check if account exists
         Account acc = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID not found"));
-        acc.setBal(acc.getBal().add(amount));
-        repository.save(acc);
+
+        // Deposit DINERO
+        executorService.submit(() -> {
+            synchronized (acc) {
+                acc.setBal(acc.getBal().add(amount));
+                repository.save(acc);
+            }
+        });
         EntityModel<Account> entityModel = assembler.toModel(acc);
 
         return ResponseEntity

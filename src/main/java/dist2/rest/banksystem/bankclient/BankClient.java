@@ -91,7 +91,7 @@ public class BankClient {
         return account;
     }
 
-    public Account withdraw(BigDecimal amount, Long id) {
+    public BigDecimal withdraw(BigDecimal amount, Long id) {
         assert ids.stream().map(x -> x.equals(id)).findAny().isPresent();
         // headers
         HttpHeaders headers = new HttpHeaders();
@@ -112,10 +112,10 @@ public class BankClient {
 
         assert res.getBody() != null;
 
-        return res.getBody();
+        return res.getBody().getBal();
     }
 
-    public Account deposit(BigDecimal amount, Long id) {
+    public BigDecimal deposit(BigDecimal amount, Long id) {
         assert ids.stream().map(x -> x.equals(id)).findAny().isPresent();
         // headers
         HttpHeaders headers = new HttpHeaders();
@@ -135,7 +135,7 @@ public class BankClient {
 
         assert res.getBody() != null;
 
-        return res.getBody();
+        return res.getBody().getBal();
     }
 
     public static void main(String[] args) {
@@ -156,6 +156,8 @@ public class BankClient {
 
         System.out.println(acc_a_1);
         System.out.println(acc_a_2);
+
+
 
     }
 }
