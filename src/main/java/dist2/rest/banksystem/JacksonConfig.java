@@ -1,4 +1,4 @@
-package dist2.rest;
+package dist2.rest.banksystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

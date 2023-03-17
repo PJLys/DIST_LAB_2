@@ -39,7 +39,7 @@ public class ClientController {
     CollectionModel<EntityModel<Account>> getAllAccounts()  {
         List<EntityModel<Account>> accs = repository.findAll().stream()
                 .map(assembler::toModel)
-                .collect(Collectors.toList());
+                .toList();
         return CollectionModel.of(accs, linkTo(methodOn(ClientController.class).getAllAccounts()).withSelfRel());
     }
 
